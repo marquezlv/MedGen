@@ -39,9 +39,11 @@ public class AppListener implements ServletContextListener{
             initializeLog += "Creating Users table if not exists...";
             s.execute(Users.getCreateStatement());
             // Adicionando admin de teste caso necessario
-            // initializeLog += "Adding admin...";
-            // Users.insertUser("admin", "Administrador", "ADMIN", "1234");
-            // initializeLog += "Admin added; ";
+            if (Users.getUsers().isEmpty()) {
+                initializeLog += "Adding admin...";
+                Users.insertUser("admin", "Administrador", "ADMIN", "1234");
+            }
+            initializeLog += "Admin added; ";
             initializeLog += "Done; ";
             initializeLog += "Creating Medicine table if not exists...";
             s.execute(Medicine.getCreateStatement());
@@ -49,7 +51,7 @@ public class AppListener implements ServletContextListener{
             s.close();
             c.close();
         } catch(Exception ex){
-            
+            initializeLog += "Erro" + ex.getLocalizedMessage();
         }
     }
     // Função para gerar a senha em Hash

@@ -70,15 +70,18 @@ public class ApiServlet extends HttpServlet {
     // Processar a sessão do usuario
     private void processSession(JSONObject file, HttpServletRequest request, HttpServletResponse response) throws Exception {
         if(request.getMethod().toLowerCase().equals("put")){
-            String body = getJSONBODY(request.getReader()).toString();
-            String login = new JSONObject(body).getString("login");
-            String password = new JSONObject(body).getString("password");
+            // teste String body = getJSONBODY(request.getReader()).toString();
+            // teste String login = new JSONObject(body).getString("login");
+            // teste String password = new JSONObject(body).getString("password");
+            JSONObject body = getJSONBODY(request.getReader());
+            String login = body.getString("login");
+            String password = body.getString("password");
             Users u = Users.getUser(login, password); // Verificando se o usuario é cadastrado
             if(u == null){
                 response.sendError(403, "Login or password incorrect");
             } else {
                 // Setando a sessão do usuario
-                request.getSession().setAttribute("user", u);
+                request.getSession().setAttribute("users", u);
                 file.put("id", u.getRowid());
                 file.put("login", u.getLogin());
                 file.put("name", u.getName());
@@ -88,15 +91,15 @@ public class ApiServlet extends HttpServlet {
             }
         } else if(request.getMethod().toLowerCase().equals("delete")){
             // Removendo a sessão do usuario
-            request.getSession().removeAttribute("user");
+            request.getSession().removeAttribute("users");
             file.put("message","Logged out");
         } else if(request.getMethod().toLowerCase().equals("get")){
             // Verificando se existe sessão do usuario
-            if(request.getSession().getAttribute("user") == null){
+            if(request.getSession().getAttribute("users") == null){
                 response.sendError(403,"No Session");
             } else {
                 // Se houver resgata os atributos
-                Users u = (Users) request.getSession().getAttribute("user");
+                Users u = (Users) request.getSession().getAttribute("users");
                 file.put("id", u.getRowid());
                 file.put("login", u.getLogin());
                 file.put("name", u.getName());

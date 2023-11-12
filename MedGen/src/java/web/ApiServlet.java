@@ -9,10 +9,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import org.json.JSONObject;
+import model.Users;
 
 @WebServlet(name = "ApiServlet", urlPatterns = {"/api/*"})
 public class ApiServlet extends HttpServlet {
     
+    // Metodo para retornar um objeto em formato de JSON
     private JSONObject getJSONBODY(BufferedReader reader) throws IOException{
         StringBuilder buffer = new StringBuilder();
         String line = null;
@@ -23,10 +25,18 @@ public class ApiServlet extends HttpServlet {
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            
+        response.setContentType("application/json;charset=UTF-8");
+        JSONObject file = new JSONObject();
+        try{
+            if(request.getRequestURI().endsWith("/api/session")){
+                processSession(file, request, response);
+            } else if(request.getRequestURI().endsWith("/api/users")){
+                processUsers(file, request, response);
+            }
+        } catch(Exception ex){
+            response.sendError(500,"Internal Error: "+ex.getLocalizedMessage());
         }
+        response.getWriter().print(file.toString());
     }
     
     @Override
@@ -39,9 +49,67 @@ public class ApiServlet extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+    }
+    
     @Override
     public String getServletInfo() {
         return "Short description";
+    }
+
+    // Processar a sessão do usuario
+    private void processSession(JSONObject file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if(request.getMethod().toLowerCase().equals("put")){
+            String body = getJSONBODY(request.getReader()).toString();
+            String login = new JSONObject(body).getString("login");
+            String password = new JSONObject(body).getString("password");
+            Users u = Users.getUser(login, password); // Verificando se o usuario é cadastrado
+            if(u == null){
+                response.sendError(403, "Login or password incorrect");
+            } else {
+                // Setando a sessão do usuario
+                request.getSession().setAttribute("user", u);
+                file.put("id", u.getRowid());
+                file.put("login", u.getLogin());
+                file.put("name", u.getName());
+                file.put("role", u.getRole());
+                file.put("passwordHash", u.getPasswordHash());
+                file.put("message","Logged in");
+            }
+        } else if(request.getMethod().toLowerCase().equals("delete")){
+            // Removendo a sessão do usuario
+            request.getSession().removeAttribute("user");
+            file.put("message","Logged out");
+        } else if(request.getMethod().toLowerCase().equals("get")){
+            // Verificando se existe sessão do usuario
+            if(request.getSession().getAttribute("user") == null){
+                response.sendError(403,"No Session");
+            } else {
+                // Se houver resgata os atributos
+                Users u = (Users) request.getSession().getAttribute("user");
+                file.put("id", u.getRowid());
+                file.put("login", u.getLogin());
+                file.put("name", u.getName());
+                file.put("role", u.getRole());
+                file.put("passwordHash", u.getPasswordHash());
+            }
+        } else{
+            response.sendError(405,"Method not allowed");
+        }
+    }
+
+    private void processUsers(JSONObject file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
     }
 
 }

@@ -38,6 +38,14 @@ public class Medicine {
         this.validity = validity;
     }
     // Getters e Setters
+    public long getRowid() {
+        return rowid;
+    }
+
+    public void setRowid(long rowid) {
+        this.rowid = rowid;
+    }
+    
     public String getName() {
         return name;
     }
@@ -79,7 +87,7 @@ public class Medicine {
     }
     
     // Função para resgatar os registros contido na tabela, retornando como um array de objetos, porém para Medicine
-      public static ArrayList<Medicine> getMedicine() throws Exception{
+      public static ArrayList<Medicine> getMedicines() throws Exception{
         ArrayList<Medicine> list = new ArrayList<>();
         Connection con = AppListener.getConnection();
         Statement stmt = con.createStatement();
@@ -88,11 +96,11 @@ public class Medicine {
         // Enquanto houver registros irá adicionar ao array o novo objeto contendo os dados de medicamentos
         while(rs.next()){
             long rowId = rs.getLong("rowid");
-            String name = rs.getString("name");
-            String category = rs.getString("category");
-            int quantity = rs.getInt("quantity");
-            double price = rs.getDouble("price");
-            Date validity = rs.getDate("validity");
+            String name = rs.getString("nm_medicine");
+            String category = rs.getString("nm_medicine");
+            int quantity = rs.getInt("qt_medicine");
+            double price = rs.getDouble("vl_medicine");
+            Date validity = rs.getDate("dt_validity");
             list.add(new Medicine(rowId, name, category, quantity, price, validity));
         }
         rs.close();
@@ -113,11 +121,11 @@ public class Medicine {
         // Verificando se retornou um dado, se retornou cria um objeto com os dados do medicamento
         if(rs.next()){
             long rowId = rs.getLong("rowid");
-            String name = rs.getString("name");
-            String category = rs.getString("category");
-            int quantity = rs.getInt("quantity");
-            double price = rs.getDouble("price");
-            Date validity = rs.getDate("validity");
+            String name = rs.getString("nm_name");
+            String category = rs.getString("nm_category");
+            int quantity = rs.getInt("qt_medicine");
+            double price = rs.getDouble("vl_medicine");
+            Date validity = rs.getDate("dt_validity");
             medicine = new Medicine(rowId, name, category, quantity, price, validity);
         }
         rs.close();
@@ -129,7 +137,7 @@ public class Medicine {
     // Função para inserir novos medicamentos no banco
     public static void insertMedicine(String name, String category, int quantity, double price, Date validity) throws Exception{
         Connection con = AppListener.getConnection();
-        String sql = "INSERT INTO medicine(name, category, quantity, price, validity)"
+        String sql = "INSERT INTO medicine(nm_medicine, nm_category, qt_medicine, vl_medicine, dt_validity)"
                 + "VALUES(?,?,?,?,?)";
         // Preparando a string de sql a ser executado e setando as "?" com os parametros
         PreparedStatement stmt = con.prepareStatement(sql);
@@ -137,7 +145,9 @@ public class Medicine {
         stmt.setString(2,category);
         stmt.setInt(3,quantity);
         stmt.setDouble(4,price);
-        stmt.setDate(5, (java.sql.Date) validity);
+        java.sql.Date sqlDate = new java.sql.Date(validity.getTime());
+        stmt.setDate(5,sqlDate);
+        
         stmt.execute();
         stmt.close();
         con.close();       
@@ -147,13 +157,14 @@ public class Medicine {
     public static void updateMedicine(String name, String category, int quantity, double price, Date validity) throws Exception{
         Connection con = AppListener.getConnection();
         // Identico ao insert com a diferença de que o login seja igual ao do usuario logado
-        String sql = "UPDATE users SET name=?, category=?, quantity=?, price=?, validity=? WHERE rowid=?";
+        String sql = "UPDATE users SET nm_medicine=?, nm_medicine=?, qt_medicine=?, vl_medicine=?, dt_validity=? WHERE rowid=?";
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1,name);
         stmt.setString(2,category);
         stmt.setInt(3,quantity);
         stmt.setDouble(4,price);
-        stmt.setDate(5, (java.sql.Date) validity);
+        java.sql.Date sqlDate = new java.sql.Date(validity.getTime());
+        stmt.setDate(5,sqlDate);
         stmt.execute();
         stmt.close();
         con.close();       
@@ -169,9 +180,6 @@ public class Medicine {
         stmt.execute();
         stmt.close();
         con.close();       
-    }
-    
-
-     
+    }    
 }
 

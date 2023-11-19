@@ -35,7 +35,7 @@ public class Users {
             String name = rs.getString("name");
             String role = rs.getString("role");
             String passwordHash = rs.getString("password_hash");
-            list.add(new Users(rowId, login, name, role, passwordHash));
+            list.add(new Users(rowId, name, login, role, passwordHash));
         }
         rs.close();
         stmt.close();
@@ -60,7 +60,7 @@ public class Users {
             String name = rs.getString("name");
             String role = rs.getString("role");
             String passwordHash = rs.getString("password_hash");
-            user = new Users(rowId,login,name,role,passwordHash);
+            user = new Users(rowId, name, login, role, passwordHash);
         }
         rs.close();
         stmt.close();

@@ -22,7 +22,7 @@
                     {{error}}
                 </div>
 
-                <div v-else
+                <div v-else>
                      <div class="mb-3">
                         <label for="categoryFilter" class="form-label">Buscar por categoria:</label>
                         <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">

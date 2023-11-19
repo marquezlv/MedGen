@@ -21,7 +21,13 @@
                 <div v-if="error" class="alert alert-danger m-2" role="alert">
                     {{error}}
                 </div>
-                <div v-else>
+
+                <div v-else
+                     <div class="mb-3">
+                        <label for="categoryFilter" class="form-label">Buscar por categoria:</label>
+                        <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">
+                        <button class="btn btn-primary" @click="filterByCategory">Filter</button>
+                    </div> 
                     <h2>Medicines</h2>
                     <table class="table">
                         <tr>
@@ -45,46 +51,61 @@
             </div>
         </div>
         <script>
-            const app = Vue.createApp({
-                data(){
-                    return{
-                        shared: shared,
-                        error: null,
-                        list: []
-                    }
-                },
-                methods: {
-                    async request(url = "", method, data){
-                        try{
-                            const response = await fetch(url, {
-                                method: method,
-                                headers: {"Content-Type": "application/json"},
-                                body: JSON.stringify(data)
-                            });
-                            if(response.status == 200){
-                                return response.json();
-                            } else {
-                                this.error = response.statusText;
-                            }
-                        } catch(e){
-                            this.error = e;
-                            return null;
-                        }
-                    },
-                    async loadList(){
-                        const data = await this.request("/MedGen/api/medicine","GET");
-                        if(data){
-                            this.list = data.list;
-                        }
-                    }
-                },
-                mounted(){
-                    this.loadList();
+const app = Vue.createApp({
+    data() {
+        return{
+            shared: shared,
+            error: null,
+            list: [],
+            categoryFilter: "",
+            listOriginally: []
+        }
+    },
+    methods: {
+        async request(url = "", method, data) {
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
+                });
+                if (response.status == 200) {
+                    return response.json();
+                } else {
+                    this.error = response.statusText;
                 }
-            });
-            app.mount('#app');
+            } catch (e) {
+                this.error = e;
+                return null;
+        }
+        },
+        filterByCategory() {
+            if (this.categoryFilter.trim() === "") {
+                // Se o campo de filtro estiver vazio, carregue a lista completa
+                this.list = this.listOriginally.slice();
+            } else {
+                // Filtrar a lista por categoria
+                const filteredList = this.listOriginally.filter(item =>
+                    item.category.toLowerCase().includes(this.categoryFilter.toLowerCase())
+                );
+                this.list = filteredList;
+            }
+        },
+        async loadList() {
+            const data = await this.request("/MedGen/api/medicine", "GET");
+            if (data) {
+                this.list = data.list;
+                this.listOriginally = data.list.slice();
+            }
+        }
+    },
+    mounted() {
+        this.loadList();
+    }
+});
+app.mount('#app');
         </script>
-        
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>
 </html>

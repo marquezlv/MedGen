@@ -11,27 +11,27 @@
     <body>
         <%@ include file="WEB-INF/jspf/header.jspf" %>
         <div id="app" class="container mt-5">
-
-            <table class="table">
-                <tr>
-                    <th>ID</th>
-                    <th>NAME</th>
-                    <th>CATEGORY</th>
-                    <th>QUANTITY</th>
-                    <th>PRICE</th>
-                    <th>VALIDITY DATE</th>
-                </tr>
-                <tr v-for="item in list" :key="item.rowId">
-                    <td>{{item.rowid}}</td>
-                    <td>{{item.name}}</td>
-                    <td>{{item.category}}</td>
-                    <td>{{item.quantity}}</td>
-                    <td>{{item.price}}</td>
-                    <td>{{item.validity}}</td>
-                </tr>
-            </table>
-            <h2 v-if="!showContent">Inserir Novo Medicamento</h2>
-            <div v-if="showContent"> 
+            <div v-if="shared.session">
+                <table class="table">
+                    <tr>
+                        <th>ID</th>
+                        <th>NAME</th>
+                        <th>CATEGORY</th>
+                        <th>QUANTITY</th>
+                        <th>PRICE</th>
+                        <th>VALIDITY DATE</th>
+                    </tr>
+                    <tr v-for="item in list" :key="item.rowId">
+                        <td>{{item.rowid}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.category}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.price}}</td>
+                        <td>{{item.validity}}</td>
+                    </tr>
+                </table>
+                <h2 v-if="!showContent">Inserir Novo Medicamento</h2>
+                <div v-if="showContent"> 
                 <form @submit.prevent="insertMedicine">
                     <div class="mb-3">
                         <label for="medicineName" class="form-label">Nome do Medicamento</label>
@@ -54,9 +54,14 @@
                         <input v-model="validityDate" type="date" class="form-control" id="validityDate" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Inserir Medicamento</button>
-                </form>
+                </form>   
             </div>
-            <button @click="toggleContent()" class="btn btn-success">{{ showContent ? 'Cancelar' : 'Adicionar Medicamento' }}</button>
+                <button @click="toggleContent()" class="btn btn-success">{{ showContent ? 'Cancelar' : 'Adicionar Medicamento' }}</button>    
+            </div>
+            <table class="table">
+                <tr v-for="item in list" :key="item.rowId">
+                </tr>
+            </table>
         </div>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script>

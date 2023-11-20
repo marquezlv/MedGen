@@ -166,8 +166,9 @@ public class ApiServlet extends HttpServlet {
             double price = body.getDouble("price");
             String sdate = body.getString("date");
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Long id = Long.parseLong(request.getParameter("id"));
             Date date = formatter.parse(sdate);
-            Medicine.updateMedicine(name, category, quantity, price, date);
+            Medicine.updateMedicine(id, name, category, quantity, price, date);
         } else if(request.getMethod().toLowerCase().equals("delete")){
             Long id = Long.parseLong(request.getParameter("id"));
             Medicine.deleteMedicine(id);

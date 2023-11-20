@@ -97,7 +97,7 @@ public class Medicine {
         while(rs.next()){
             long rowId = rs.getLong("rowid");
             String name = rs.getString("nm_medicine");
-            String category = rs.getString("nm_medicine");
+            String category = rs.getString("nm_category");
             int quantity = rs.getInt("qt_medicine");
             double price = rs.getDouble("vl_medicine");
             Date validity = rs.getDate("dt_validity");
@@ -121,7 +121,7 @@ public class Medicine {
         // Verificando se retornou um dado, se retornou cria um objeto com os dados do medicamento
         if(rs.next()){
             long rowId = rs.getLong("rowid");
-            String name = rs.getString("nm_name");
+            String name = rs.getString("nm_medicine");
             String category = rs.getString("nm_category");
             int quantity = rs.getInt("qt_medicine");
             double price = rs.getDouble("vl_medicine");
@@ -154,10 +154,10 @@ public class Medicine {
     }
     
     // Atualizar dados do medicamento
-    public static void updateMedicine(String name, String category, int quantity, double price, Date validity) throws Exception{
+    public static void updateMedicine(long id,String name, String category, int quantity, double price, Date validity) throws Exception{
         Connection con = AppListener.getConnection();
         // Identico ao insert com a diferença de que o login seja igual ao do usuario logado
-        String sql = "UPDATE users SET nm_medicine=?, nm_medicine=?, qt_medicine=?, vl_medicine=?, dt_validity=? WHERE rowid=?";
+        String sql = "UPDATE medicine SET nm_medicine=?, nm_category=?, qt_medicine=?, vl_medicine=?, dt_validity=? WHERE rowid=?";
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1,name);
         stmt.setString(2,category);
@@ -165,6 +165,7 @@ public class Medicine {
         stmt.setDouble(4,price);
         java.sql.Date sqlDate = new java.sql.Date(validity.getTime());
         stmt.setDate(5,sqlDate);
+        stmt.setLong(6,id);
         stmt.execute();
         stmt.close();
         con.close();       

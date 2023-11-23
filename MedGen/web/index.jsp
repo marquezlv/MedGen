@@ -23,7 +23,7 @@
                 </div>
 
                 <div v-else>
-                     <div class="mb-3">
+                    <div class="mb-3">
                         <label for="categoryFilter" class="form-label">Buscar por categoria:</label>
                         <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">
                         <button class="btn btn-primary" @click="filterByCategory">Filter</button>
@@ -37,6 +37,7 @@
                             <th>QUANTITY</th>
                             <th>PRICE</th>
                             <th>VALIDITY DATE</th>
+                            <th>ACTIONS</th>
                         </tr>
                         <tr v-for="item in list" :key="item.rowId">
                             <td>{{item.rowid}}</td>
@@ -45,8 +46,39 @@
                             <td>{{item.quantity}}</td>
                             <td>{{item.price}}</td>
                             <td>{{item.validity}}</td>
+                            <td><button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#checkOut" @click="setVariables(item.name,item.price, item.category, item.validity, item.quantity, item.rowid)"><i class="bi bi-cart2"></i></button></td>
                         </tr>
                     </table>
+                    <div class="modal fade" id="checkOut" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5">Medicine Check Out</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="quantity" class="form-label">Sell quantity</label>
+                                            <input type="number" class="form-control" v-model="quantity" id="quantity" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="medicineName" class="form-label">Medicine Name</label>
+                                            <input type="text" v-model="medicineName" class="form-control" id="medicineName" disabled>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="medicinePrice" class="form-label">Unitary Price</label>
+                                            <input type="number" v-model="medicinePrice" class="form-control" id="medicinePrice" step="0.01" disabled>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="checkOut()">Check Out</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,8 +89,15 @@ const app = Vue.createApp({
             shared: shared,
             error: null,
             list: [],
-            categoryFilter: "",
-            listOriginally: []
+            categoryFilter: '',
+            listOriginally: [],
+            currentQtd: 0,
+            quantity: 0,
+            medicineName: '',
+            medicinePrice: 0,
+            category: '',
+            validityDate: '',
+            rowid: 0
         }
     },
     methods: {
@@ -90,6 +129,55 @@ const app = Vue.createApp({
                 );
                 this.list = filteredList;
             }
+        },
+        async setVariables(name, price, category, date, quantity, id) {
+            this.medicineName = name;
+            this.medicinePrice = price;
+            this.category = category;
+            this.validityDate = date;
+            this.currentQtd = quantity;
+            this.rowid = id
+        },
+        async updateMedicine() {
+            const originalDate = new Date(this.validityDate);
+            const day = originalDate.getDate().toString().padStart(2, '0');
+            const month = (originalDate.getMonth() + 1).toString().padStart(2, '0');
+            const year = originalDate.getFullYear();
+            const formattedDate = day + '/' + month + '/' + year;
+            const newQuantity = this.currentQtd - this.quantity;
+            const data = await this.request("/MedGen/api/medicine?id=" + this.rowid, "PUT", {
+                name: this.medicineName,
+                category: this.category,
+                quantity: newQuantity,
+                price: parseFloat(this.medicinePrice),
+                date: formattedDate
+            });
+        },
+        async checkOut() {
+            const sysDate = new Date();
+            const day = sysDate.getDate().toString().padStart(2, '0');
+            const month = (sysDate.getMonth() + 1).toString().padStart(2, '0');
+            const year = sysDate.getFullYear();
+            const formattedDate = day + '/' + month + '/' + year;
+            const data = await this.request("/MedGen/api/checkOut", "POST", {
+                user: this.shared.session.name,
+                price: this.medicinePrice,
+                medicine: this.medicineName,
+                quantity: this.quantity,
+                date: formattedDate
+            });
+            this.updateMedicine();
+            this.resetForm();
+            window.location.reload();
+        },
+        async resetForm() {
+            this.currentQtd = 0;
+            this.quantity = 0;
+            this.medicineName = '';
+            this.medicinePrice = 0;
+            this.category = '';
+            this.validityDate = '';
+            this.rowid = 0;
         },
         async loadList() {
             const data = await this.request("/MedGen/api/medicine", "GET");

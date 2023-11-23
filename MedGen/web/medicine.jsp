@@ -165,10 +165,25 @@
 
                 console.log(data);
                 this.loadList();
+                this.addHistory();
                 this.resetForm();
                 this.editingMedicine = null;
                 this.toggleContent(null);
                 },
+                async addHistory() {
+            const sysDate = new Date();
+            const day = sysDate.getDate().toString().padStart(2, '0');
+            const month = (sysDate.getMonth() + 1).toString().padStart(2, '0');
+            const year = sysDate.getFullYear();
+            const formattedDate = day + '/' + month + '/' + year;
+
+            const data = await this.request("/MedGen/api/editHistory", "POST", {
+                user: this.shared.session.name,
+                modified: formattedDate,
+                medicine: this.medicineName
+            });
+            console.log(data);
+        },
             async loadList() {
                 const data = await this.request("/MedGen/api/medicine", "GET");
                 if (data) {

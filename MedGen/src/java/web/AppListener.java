@@ -8,6 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.Date;
+import model.CheckOut;
 import model.Medicine;
 import model.Users;
 import model.EditHistory;
@@ -52,6 +53,9 @@ public class AppListener implements ServletContextListener{
             initializeLog += "Done.";   
             initializeLog += "Creating EditHistory table if not exists...";
             s.execute(EditHistory.getCreateStatement());
+            initializeLog += "Done.";
+            initializeLog += "Creating CheckOut table if not exists...";
+            s.execute(CheckOut.getCreateStatement());
             initializeLog += "Done.";
             s.close();
             c.close();

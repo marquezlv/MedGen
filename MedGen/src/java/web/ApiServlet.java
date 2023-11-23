@@ -14,6 +14,7 @@ import model.Medicine;
 import org.json.JSONObject;
 import model.Users;
 import org.json.JSONArray;
+import model.EditHistory;
 
 @WebServlet(name = "ApiServlet", urlPatterns = {"/api/*"})
 public class ApiServlet extends HttpServlet {
@@ -38,6 +39,8 @@ public class ApiServlet extends HttpServlet {
                 processUsers(file, request, response);
             } else if(request.getRequestURI().endsWith("/api/medicine")){
                 processMedicine(file, request, response);
+            } else if (request.getRequestURI().endsWith("/api/editHistory")) {
+                processEditHistory(file, request, response);
             }
         } catch(Exception ex){
             response.sendError(500,"Internal Error: "+ex.getLocalizedMessage());
@@ -176,5 +179,25 @@ public class ApiServlet extends HttpServlet {
             response.sendError(405,"Methodo not allowed");
         }
     }
-
+    
+private void processEditHistory(JSONObject file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getSession().getAttribute("users") == null) {
+            response.sendError(401, "Unauthorized: No session");
+        } else if (request.getMethod().toLowerCase().equals("post")) {
+            JSONObject body = getJSONBODY(request.getReader());
+            String name = body.getString("user");
+            String sdate = body.getString("modified");
+            String medicine = body.getString("medicine");
+            Date modified = new SimpleDateFormat("dd/MM/yyyy").parse(sdate);
+            EditHistory.insertHistory(name, modified, medicine);
+        } else if (!((Users) request.getSession().getAttribute("users")).getRole().equals("ADMIN")) {
+            response.sendError(401, "Unauthorized: Only admin can manage users");
+        } else if (request.getMethod().toLowerCase().equals("delete")) {
+            EditHistory.deleteHistory();
+        } else if (request.getMethod().toLowerCase().equals("get")) {
+            file.put("list", new JSONArray(EditHistory.getHistory()));
+        } else {
+            response.sendError(405, "Methodo not allowed");
+        }
+    }
 }

@@ -21,6 +21,9 @@
                     <li class="nav-item" v-if="data.role == 'ADMIN'">
                         <a class="nav-link" href="editHistory.jsp">Edit History</a>
                     </li>
+                    <li class="nav-item" v-if="data.role == 'ADMIN'">
+                        <a class="nav-link" href="salesReport.jsp">Sales Report</a>
+                    </li>
                 </ul>
                 <span class="navbar-text">
                     <i class="bi bi-person"></i>{{data.name}}

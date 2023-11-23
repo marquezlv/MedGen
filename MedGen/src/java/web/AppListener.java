@@ -10,6 +10,8 @@ import java.sql.*;
 import java.util.Date;
 import model.Medicine;
 import model.Users;
+import model.EditHistory;
+
 
 @WebListener
 public class AppListener implements ServletContextListener{
@@ -47,7 +49,10 @@ public class AppListener implements ServletContextListener{
             initializeLog += "Done; ";
             initializeLog += "Creating Medicine table if not exists...";
             s.execute(Medicine.getCreateStatement());
-            initializeLog += "Done.";            
+            initializeLog += "Done.";   
+            initializeLog += "Creating EditHistory table if not exists...";
+            s.execute(EditHistory.getCreateStatement());
+            initializeLog += "Done.";
             s.close();
             c.close();
         } catch(Exception ex){

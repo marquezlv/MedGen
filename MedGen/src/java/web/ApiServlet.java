@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import model.Users;
 import org.json.JSONArray;
 import model.EditHistory;
+import model.CheckOut;
 
 @WebServlet(name = "ApiServlet", urlPatterns = {"/api/*"})
 public class ApiServlet extends HttpServlet {
@@ -41,6 +42,8 @@ public class ApiServlet extends HttpServlet {
                 processMedicine(file, request, response);
             } else if (request.getRequestURI().endsWith("/api/editHistory")) {
                 processEditHistory(file, request, response);
+            } else if (request.getRequestURI().endsWith("/api/checkOut")) {
+                processCheckOut(file, request, response);
             }
         } catch(Exception ex){
             response.sendError(500,"Internal Error: "+ex.getLocalizedMessage());
@@ -191,11 +194,35 @@ private void processEditHistory(JSONObject file, HttpServletRequest request, Htt
             Date modified = new SimpleDateFormat("dd/MM/yyyy").parse(sdate);
             EditHistory.insertHistory(name, modified, medicine);
         } else if (!((Users) request.getSession().getAttribute("users")).getRole().equals("ADMIN")) {
-            response.sendError(401, "Unauthorized: Only admin can manage users");
+            response.sendError(401, "Unauthorized: Only admin can see edit history");
         } else if (request.getMethod().toLowerCase().equals("delete")) {
             EditHistory.deleteHistory();
         } else if (request.getMethod().toLowerCase().equals("get")) {
             file.put("list", new JSONArray(EditHistory.getHistory()));
+        } else {
+            response.sendError(405, "Methodo not allowed");
+        }
+    }
+
+    private void processCheckOut(JSONObject file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getSession().getAttribute("users") == null) {
+            response.sendError(401, "Unauthorized: No session");
+        } else if (request.getMethod().toLowerCase().equals("post")) {
+            JSONObject body = getJSONBODY(request.getReader());
+            String name = body.getString("user");
+            double price = body.getDouble("price");
+            String medicine = body.getString("medicine");
+            int quantity = body.getInt("quantity");
+            String sdate = body.getString("date");
+            double priceTotal = price * quantity;
+            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sdate);
+            CheckOut.insertCheckOut(name, price, priceTotal, medicine, quantity, date);
+        } else if (!((Users) request.getSession().getAttribute("users")).getRole().equals("ADMIN")) {
+            response.sendError(401, "Unauthorized: Only admin can see sell history");
+        } else if (request.getMethod().toLowerCase().equals("delete")) {
+            CheckOut.deleteCheckOut();
+        } else if (request.getMethod().toLowerCase().equals("get")) {
+            file.put("list", new JSONArray(CheckOut.getCheckOuts()));
         } else {
             response.sendError(405, "Methodo not allowed");
         }

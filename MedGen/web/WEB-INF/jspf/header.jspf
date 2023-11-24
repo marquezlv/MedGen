@@ -18,10 +18,10 @@
                     <li class="nav-item" v-if="data.role == 'ADMIN'">
                         <a class="nav-link" href="users.jsp">Users</a>
                     </li>                    
-                    <li class="nav-item" v-if="data.role == 'ADMIN'">
+                    <li class="nav-item">
                         <a class="nav-link" href="editHistory.jsp">Edit History</a>
                     </li>
-                    <li class="nav-item" v-if="data.role == 'ADMIN'">
+                    <li class="nav-item">
                         <a class="nav-link" href="salesReport.jsp">Sales Report</a>
                     </li>
                 </ul>

@@ -193,8 +193,6 @@ private void processEditHistory(JSONObject file, HttpServletRequest request, Htt
             String medicine = body.getString("medicine");
             Date modified = new SimpleDateFormat("dd/MM/yyyy").parse(sdate);
             EditHistory.insertHistory(name, modified, medicine);
-        } else if (!((Users) request.getSession().getAttribute("users")).getRole().equals("ADMIN")) {
-            response.sendError(401, "Unauthorized: Only admin can see edit history");
         } else if (request.getMethod().toLowerCase().equals("delete")) {
             EditHistory.deleteHistory();
         } else if (request.getMethod().toLowerCase().equals("get")) {
@@ -217,8 +215,6 @@ private void processEditHistory(JSONObject file, HttpServletRequest request, Htt
             double priceTotal = price * quantity;
             Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sdate);
             CheckOut.insertCheckOut(name, price, priceTotal, medicine, quantity, date);
-        } else if (!((Users) request.getSession().getAttribute("users")).getRole().equals("ADMIN")) {
-            response.sendError(401, "Unauthorized: Only admin can see sell history");
         } else if (request.getMethod().toLowerCase().equals("delete")) {
             CheckOut.deleteCheckOut();
         } else if (request.getMethod().toLowerCase().equals("get")) {

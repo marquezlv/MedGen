@@ -17,7 +17,8 @@
                 </div>
                 <div v-else>
                     <h2>Edit History</h2>
-                    <button class="btn btn-danger" @click="clearHistory()">Clear History</button>
+                    <!--Restrição para que apenas admin veja e consiga excluir historico -->
+                    <button v-if="shared.session.role == 'ADMIN'" class="btn btn-danger" @click="clearHistory()">Clear History</button>
                     <table class="table">
                         <tr>
                             <th>User who modified</th>

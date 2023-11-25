@@ -16,9 +16,10 @@
                     {{error}}
                 </div>
                 <div v-else>
-                    <h2>Edit History</h2>
+                    <h2>Edit History
                     <!--Restrição para que apenas admin veja e consiga excluir historico -->
                     <button v-if="shared.session.role == 'ADMIN'" class="btn btn-danger" @click="clearHistory()">Clear History</button>
+                </h2>
                     <table class="table">
                         <tr>
                             <th>User who modified</th>

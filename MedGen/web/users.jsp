@@ -75,7 +75,7 @@
                             <th>LOGIN</th>
                             <th>NAME</th>
                             <th>ROLE</th>
-                            <th>COMMANDS</th>
+                            <th>ACTIONS</th>
                         </tr>
                         <!-- for para completar a tabela com as informações -->
                         <tr v-for="item in list" :key="item.rowId">
@@ -107,7 +107,7 @@
                 };
             },
             methods: {
-                <!-- Requisição -->
+                // Requisição
                 async request(url = "", method, data) {
                     try {
                         const response = await fetch(url, {
@@ -149,10 +149,20 @@
                 },
                 
                 async removeUser(id) {
+                try{
+                    // Box de confirmação de delete
+                    const confirmDelete = confirm("Tem certeza que deseja excluir este usuário?");
+                    if (!confirmDelete) {
+                    return;
+                    }
+                
                     const data = await this.request("/MedGen/api/users?id=" +id, "DELETE");
                     if (data) {
                         await this.loadList();
                     }
+                } catch (error) {
+                  console.error("Erro ao excluir o usuário:", error);
+                  }
                 }
                 },
             mounted() {

@@ -24,14 +24,18 @@
 
                 <div v-else>
                     <div class="mb-3">
-                        <label for="categoryFilter" class="form-label">Buscar por categoria:</label>
-                        <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">
-                        <button class="btn btn-primary" @click="filterByCategory">Filter</button>
-                    </div> 
+                        <label for="categoryFilter" class="form-label">Search for category:</label>
+                            <div class="input-group">
+                            <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">
+                            <button class="btn btn-primary" @click="filterByCategory">
+                            <i class="bi bi-search"></i> Filter
+                            </button>
+                        </div>
+                    </div>
                     <h2>Medicines</h2>
                     <table class="table">
                         <tr>
-                            <th>ID</th>
+                            <th>BATCH</th>
                             <th>NAME</th>
                             <th>CATEGORY</th>
                             <th>QUANTITY</th>

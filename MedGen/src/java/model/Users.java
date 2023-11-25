@@ -79,7 +79,20 @@ public class Users {
         stmt.setString(2,name);
         stmt.setString(3,role);
         stmt.setString(4,AppListener.getMd5Hash(password));
+                // Try catch para pegar erro de criar login já existente 
+        try {
         stmt.execute();
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 19) { // O código de erro de violação de chave unica no SQLite é 19
+        throw new Exception("Error: Login existente, selecione outro login", e);
+    } else {
+        throw new Exception("Error: Falha ao executar o SQL", e); // Tratar qualquer outro erro 
+
+    }
+        }
+        stmt.close();
+        con.close();       
+    }
         stmt.close();
         con.close();       
     }

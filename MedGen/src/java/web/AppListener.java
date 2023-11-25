@@ -12,6 +12,7 @@ import model.CheckOut;
 import model.Medicine;
 import model.Users;
 import model.EditHistory;
+import model.Supplier;
 
 
 @WebListener
@@ -37,7 +38,7 @@ public class AppListener implements ServletContextListener{
             // Deixando pronto execução de delete de todos os dados caso necessario
             // s.execute("DELETE FROM users");
             // s.execute("DELETE FROM medicine");
-            // Dando feedback no log
+            // Dando feedback no log           
             initializeLog += new Date() + ": Initializing database creation;";
             initializeLog += "Creating Users table if not exists...";
             s.execute(Users.getCreateStatement());
@@ -56,6 +57,9 @@ public class AppListener implements ServletContextListener{
             initializeLog += "Done.";
             initializeLog += "Creating CheckOut table if not exists...";
             s.execute(CheckOut.getCreateStatement());
+            initializeLog += "Done.";
+            initializeLog += "Creating Supplier table if not exists...";
+            s.execute(Supplier.getCreateStatement());
             initializeLog += "Done.";
             s.close();
             c.close();

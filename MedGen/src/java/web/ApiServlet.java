@@ -16,6 +16,7 @@ import model.Users;
 import org.json.JSONArray;
 import model.EditHistory;
 import model.CheckOut;
+import model.Supplier;
 
 @WebServlet(name = "ApiServlet", urlPatterns = {"/api/*"})
 public class ApiServlet extends HttpServlet {
@@ -44,6 +45,9 @@ public class ApiServlet extends HttpServlet {
                 processEditHistory(file, request, response);
             } else if (request.getRequestURI().endsWith("/api/checkOut")) {
                 processCheckOut(file, request, response);
+            }
+              else if (request.getRequestURI().endsWith("/api/supplier")) {
+                processSupplier(file, request, response);
             }
         } catch(Exception ex){
             response.sendError(500,"Internal Error: "+ex.getLocalizedMessage());
@@ -221,6 +225,35 @@ private void processEditHistory(JSONObject file, HttpServletRequest request, Htt
             file.put("list", new JSONArray(CheckOut.getCheckOuts()));
         } else {
             response.sendError(405, "Methodo not allowed");
+        }
+    }
+    private void processSupplier(JSONObject file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if(request.getSession().getAttribute("users")== null){
+            response.sendError(401, "Unauthorized: No session");
+        } else if(request.getMethod().toLowerCase().equals("get")){
+            file.put("list", new JSONArray(Supplier.getSuppliers()));  
+        } else if(request.getMethod().toLowerCase().equals("post")){
+            JSONObject body = getJSONBODY(request.getReader());
+            String name = body.getString("name");
+            String address = body.getString("address");
+            String phone = body.getString("phone");
+            String email = body.getString("email");
+            String cnpj = body.getString("cnpj");
+            Supplier.insertSupplier(name, address, phone, email, cnpj);         
+        } else if(request.getMethod().toLowerCase().equals("put")){
+            JSONObject body = getJSONBODY(request.getReader());
+            String name = body.getString("name");
+            String address = body.getString("address");
+            String phone = body.getString("phone");
+            String email = body.getString("email");
+            String cnpj = body.getString("cnpj");
+            Long id = Long.parseLong(request.getParameter("id"));
+            Supplier.updateSupplier(id,name, address, phone, email, cnpj);         
+        } else if(request.getMethod().toLowerCase().equals("delete")){
+            Long id = Long.parseLong(request.getParameter("id"));
+            Supplier.deleteSupplier(id);
+        } else{
+            response.sendError(405, "Method not allowed");
         }
     }
 }

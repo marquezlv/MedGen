@@ -93,10 +93,6 @@ public class Users {
         stmt.close();
         con.close();       
     }
-        stmt.close();
-        con.close();       
-    }
-    
     // Atualizar dados do usuario
     public static void updateUser(String login, String name, String role, String password) throws Exception{
         Connection con = AppListener.getConnection();

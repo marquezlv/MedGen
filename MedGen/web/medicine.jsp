@@ -50,7 +50,6 @@
                         </div>
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Quantidade</label>
-                            <!-- <input v-model="quantity" type="number" class="form-control" id="quantity" required> -->
                                 <input v-model="quantity" type="number" class="form-control" id="quantity" step="1" required>
 
                         </div>
@@ -123,10 +122,10 @@
                 const formattedDate = day + '/' + month + '/' + year;
                 const data = await this.request("/MedGen/api/medicine", "POST", {
                 name: this.medicineName,
-                        category: this.category,
-                        quantity: this.quantity,
-                        price: parseFloat(this.price),
-                        date: formattedDate
+                category: this.category,
+                quantity: this.quantity,
+                price: parseFloat(this.price),
+                date: formattedDate
                 });
                 this.resetForm();
                 window.location.reload();
@@ -151,11 +150,7 @@
                 }; }
             
                 // Envia para o servidor 
-                const data = await this.request(`/MedGen/api/medicine?id=`+ (this.editingMedicine.rowid), "PUT", {     
-                    
-                //por favor testar a linha abaixo, aqui não está reconhecendo o {this.editingMedicine.rowid} como variavel
-                //const data = await this.request(`/MedGen/api/medicine?id={this.editingMedicine.rowid}`, "PUT", {
-
+                const data = await this.request(`/MedGen/api/medicine?id=`+ (this.editingMedicine.rowid), "PUT", {                    
                 name: this.medicineName,
                 category: this.category,
                 quantity: this.quantity,
@@ -199,10 +194,7 @@
                     return;
                 }
                 // Envia uma solicitação para excluir o medicamento
-                const response = await this.request(`/MedGen/api/medicine?id=` +rowid, "DELETE");
-                //por favor testar a linha abaixo, aqui não está receonhcendo {rowid} como variavel
-                //const response = await this.request(`/MedGen/api/medicine?id={rowid}`, "DELETE");
-
+                const response = await this.request(`/MedGen/api/medicine?id=` +rowid, "DELETE");   
                 if (response) {
                     this.loadList();
                 }
@@ -218,7 +210,7 @@
                 this.category = this.editingMedicine.category;
                 this.quantity = this.editingMedicine.quantity;
                 this.price = parseFloat (this.editingMedicine.price);
-                this.validityDate = this.editingMedicine.date;
+                this.validityDate = this.editingMedicine.validity;
                 } else{
                 this.resetForm();
                 }

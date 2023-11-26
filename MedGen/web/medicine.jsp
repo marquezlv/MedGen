@@ -17,7 +17,7 @@
                 </div>
                 <h2>
                     Medicine Inventory 
-                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
+                    <button @click="resetForm()" type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
                         Add
                     </button>
                 </h2>
@@ -63,11 +63,11 @@
                                         </select>
                                     </div>
                                 </form>
-                                </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                                @click="insertOrUpdateMedicine()">Save</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                        @click="insertOrUpdateMedicine()">Save</button>
                             </div>
                         </div>
                     </div>
@@ -103,85 +103,86 @@
             </div>
         </div>
         <script>
-        const app = Vue.createApp({
-        data() {
+const app = Vue.createApp({
+    data() {
         return {
-        shared: shared,
-                medicineName: '',
-                category: '',
-                quantity: 0,
-                price: 0,
-                validityDate: '',
-                list: [],
-                supplier: [],
-                newSupplier: '',
-                editingMedicine: null
+            shared: shared,
+            medicineName: '',
+            category: '',
+            quantity: 0,
+            price: 0,
+            validityDate: '',
+            list: [],
+            supplier: [],
+            newSupplier: '',
+            editingMedicine: null
         };
-        },
-                methods: {
-                async request(url = "", method, data) {
-                try {
+    },
+    methods: {
+        async request(url = "", method, data) {
+            try {
                 const response = await fetch(url, {
-                method: method,
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify(data)
+                    method: method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
                 });
                 if (response.status === 200) {
-                return response.json();
+                    return response.json();
                 } else {
-                this.error = response.statusText;
+                    this.error = response.statusText;
                 }
-                } catch (e) {
+            } catch (e) {
                 this.error = e;
                 return null;
-                }
-                },
-                async insertOrUpdateMedicine() {
-                if (this.editingMedicine) {
+        }
+        },
+        async insertOrUpdateMedicine() {
+            if (this.editingMedicine) {
                 await this.updateMedicine();
-                } else {
+            } else {
                 await this.insertMedicine();
-                }
-                },
-            async insertMedicine() {
-                const originalDate = new Date(this.validityDate);
-                // Obtendo componentes de data (dia, mês, ano)
-                const day = originalDate.getDate().toString().padStart(2, '0');
-                const month = (originalDate.getMonth() + 1).toString().padStart(2, '0'); // O mês é baseado em zero
-                const year = originalDate.getFullYear();
-                const formattedDate = day + '/' + month + '/' + year;
-                const data = await this.request("/MedGen/api/medicine", "POST", {
+            }
+        },
+        async insertMedicine() {
+            const originalDate = new Date(this.validityDate);
+            // Obtendo componentes de data (dia, mês, ano)
+            const day = originalDate.getDate().toString().padStart(2, '0');
+            const month = (originalDate.getMonth() + 1).toString().padStart(2, '0'); // O mês é baseado em zero
+            const year = originalDate.getFullYear();
+            const formattedDate = day + '/' + month + '/' + year;
+            const data = await this.request("/MedGen/api/medicine", "POST", {
                 name: this.medicineName,
                 category: this.category,
                 quantity: this.quantity,
                 price: parseFloat(this.price),
                 date: formattedDate,
                 supplier: this.newSupplier
-                });
-                this.resetForm();
-                },
-            async updateMedicine() {
-                const originalDate = new Date(this.validityDate);
-                const day = originalDate.getDate().toString().padStart(2, '0');
-                const month = (originalDate.getMonth() + 1).toString().padStart(2, '0');
-                const year = originalDate.getFullYear();
-                const formattedDate = day + '/' + month + '/' + year;
-                
-                // Modifica apenas o item editado na lista
-                const index = this.list.findIndex(item => item.rowid === this.editingMedicine.rowid);
-                if (index !== -1) {
+            });
+            this.resetForm();
+        },
+        async updateMedicine() {
+            const originalDate = new Date(this.validityDate);
+            const day = originalDate.getDate().toString().padStart(2, '0');
+            const month = (originalDate.getMonth() + 1).toString().padStart(2, '0');
+            const year = originalDate.getFullYear();
+            const formattedDate = day + '/' + month + '/' + year;
+
+            // Modifica apenas o item editado na lista
+            const index = this.list.findIndex(item => item.rowid === this.editingMedicine.rowid);
+            if (index !== -1) {
                 this.list[index] = {
-                ...this.list[index],
-                name: this.medicineName,
-                category: this.category,
-                quantity: this.quantity,
-                price: parseFloat(this.price),
-                validity: formattedDate,
-                supplier: this.newSupplier
-                }; }
-            
-                // Envia para o servidor 
-                const data = await this.request(`/MedGen/api/medicine?id=`+ (this.editingMedicine.rowid), "PUT", {                    
+                    ...this.list[index],
+                    name: this.medicineName,
+                    category: this.category,
+                    quantity: this.quantity,
+                    price: parseFloat(this.price),
+                    validity: formattedDate,
+                    supplier: this.newSupplier
+                };
+            }
+
+            // Envia para o servidor 
+            const data = await this.request(`/MedGen/api/medicine?id=` + (this.editingMedicine.rowid), "PUT", {
                 name: this.medicineName,
                 category: this.category,
                 quantity: this.quantity,
@@ -190,14 +191,14 @@
                 supplier: this.newSupplier
             });
 
-                console.log(data);
-                this.loadList();
-                this.addHistory();
-                this.resetForm();
-                this.editingMedicine = null;
-                this.toggleContent(null);
-                },
-                async addHistory() {
+            console.log(data);
+            this.loadList();
+            this.addHistory();
+            this.resetForm();
+            this.editingMedicine = null;
+            this.toggleContent(null);
+        },
+        async addHistory() {
             const sysDate = new Date();
             const day = sysDate.getDate().toString().padStart(2, '0');
             const month = (sysDate.getMonth() + 1).toString().padStart(2, '0');
@@ -211,13 +212,17 @@
             });
             console.log(data);
         },
-            async loadList() {
-                const data = await this.request("/MedGen/api/medicine", "GET");
-                if (data) {
+        async loadList() {
+            const data = await this.request("/MedGen/api/medicine", "GET");
+            if (data) {
                 this.list = data.list;
-                }
-                },
-            async deleteMedicine(rowid) {
+            }
+            const supplier = await this.request("/MedGen/api/supplier", "GET");
+            if (supplier) {
+                this.supplier = supplier.list;
+            }
+        },
+        async deleteMedicine(rowid) {
             try {
                 // Box de confirmação de delete
                 const confirmDelete = confirm("Tem certeza que deseja excluir este medicamento?");
@@ -226,7 +231,7 @@
                     return;
                 }
                 // Envia uma solicitação para excluir o medicamento
-                const response = await this.request(`/MedGen/api/medicine?id=` +rowid, "DELETE");   
+                const response = await this.request(`/MedGen/api/medicine?id=` + rowid, "DELETE");
                 if (response) {
                     this.loadList();
                 }
@@ -234,44 +239,44 @@
                 console.error("Erro ao excluir o medicamento:", error);
             }
         },
-            validateQuantity() {
+        validateQuantity() {
             if (this.quantity < 0) {
-            this.quantity = 1; // se for negativo, muda para 1 no input
-                }
-                },
-            validatePrice() {
-        if (this.price < 0) {
-            this.price = 1; // se for negativo, muda para 1 no input
-                }
-                },    
-                
-            toggleContent(medicine) {
-                if (medicine) {
-                this.editingMedicine = { ...medicine };
+                this.quantity = 1; // se for negativo, muda para 1 no input
+            }
+        },
+        validatePrice() {
+            if (this.price < 0) {
+                this.price = 1; // se for negativo, muda para 1 no input
+            }
+        },
+
+        toggleContent(medicine) {
+            if (medicine) {
+                this.editingMedicine = {...medicine};
                 this.medicineName = this.editingMedicine.name;
                 this.category = this.editingMedicine.category;
                 this.quantity = this.editingMedicine.quantity;
-                this.price = parseFloat (this.editingMedicine.price);
+                this.price = parseFloat(this.editingMedicine.price);
                 this.validityDate = this.editingMedicine.validity;
                 this.newSupplier = this.editingMedicine.supplier;
-                } else{
+            } else {
                 this.resetForm();
-                }
-                },
-                        resetForm() {
-                this.medicineName = '';
-                this.category = '';
-                this.quantity = 0;
-                this.price = 0;
-                this.validityDate = '';
-                this.newSupplier = '';
-                }
-                },
-                mounted() {
-        this.loadList();
+            }
+        },
+        resetForm() {
+            this.medicineName = '';
+            this.category = '';
+            this.quantity = 0;
+            this.price = 0;
+            this.validityDate = '';
+            this.newSupplier = '';
         }
-        });
-        app.mount('#app');
+    },
+    mounted() {
+        this.loadList();
+    }
+});
+app.mount('#app');
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>

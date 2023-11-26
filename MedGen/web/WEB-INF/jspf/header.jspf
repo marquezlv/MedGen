@@ -104,6 +104,8 @@
                     this.data = data;
                     this.error = null;
                     this.shared.session = this.data;
+                    // Redirecionar para a página principal
+                    window.location.href = "/MedGen/index.jsp";
                 }
             },
             async logout() {
@@ -112,7 +114,8 @@
                     this.data = data;
                     this.error = null;
                     this.shared.session = this.data;
-                    window.location.reload();
+                    // Resetando a URL 
+                    window.location.href = "/MedGen/";
                 }
             }
         },

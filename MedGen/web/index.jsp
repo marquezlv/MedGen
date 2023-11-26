@@ -64,7 +64,11 @@
                                     <form>
                                         <div class="mb-3">
                                             <label for="quantity" class="form-label">Sell quantity</label>
-                                            <input type="number" class="form-control" v-model="quantity" id="quantity" required>
+                                            <!-- Evento de interação do input com validação -->
+                                            <input type="number" class="form-control" v-model="quantity" id="quantity" @input="validateQuantity" required min="1">
+                                            <div v-if="error" class="alert alert-danger mt-2" role="alert">
+                                                {{error}}
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="medicineName" class="form-label">Medicine Name</label>
@@ -157,6 +161,16 @@ const app = Vue.createApp({
                 date: formattedDate
             });
         },
+        // Valida se o valor colocado é negativo ou maior que a quantidade de estoque
+        validateQuantity() {
+        if (this.quantity < 0) {
+            this.quantity = 1; // se for negativo, muda para 1 no input
+        }
+        else if (this.quantity > this.currentQtd) {
+            this.quantity = this.currentQtd; // se for maior que a qtd de estoque, retorna pro maximo valor existente de estoque
+            
+        }
+    },
         async checkOut() {
             const sysDate = new Date();
             const day = sysDate.getDate().toString().padStart(2, '0');

@@ -25,10 +25,10 @@
                 <div v-else>
                     <div class="mb-3">
                         <label for="categoryFilter" class="form-label">Search for category:</label>
-                            <div class="input-group">
+                        <div class="input-group">
                             <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">
                             <button class="btn btn-primary" @click="filterByCategory">
-                            <i class="bi bi-search"></i> Filter
+                                <i class="bi bi-search"></i> Filter
                             </button>
                         </div>
                     </div>
@@ -40,7 +40,10 @@
                             <th>CATEGORY</th>
                             <th>QUANTITY</th>
                             <th>PRICE</th>
-                            <th>VALIDITY DATE</th>
+                            <th>
+                                VALIDITY DATE
+                                <span @click="sortByValidity" v-html="sortDirection === 'asc' ? '<i class=\'bi bi-arrow-up\'></i>' : '<i class=\'bi bi-arrow-down\'></i>'"></span>
+                            </th>
                             <th>ACTIONS</th>
                         </tr>
                         <tr v-for="item in list" :key="item.rowId">
@@ -105,6 +108,7 @@ const app = Vue.createApp({
             medicinePrice: 0,
             category: '',
             validityDate: '',
+            sortDirection: 'asc',
             rowid: 0
         }
     },
@@ -125,6 +129,20 @@ const app = Vue.createApp({
                 this.error = e;
                 return null;
         }
+        },
+        sortByValidity() {
+            // Alterna a direção da ordenação
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+
+            // Ordena a lista por data de validade e direção
+            this.list.sort((a, b) => {
+                const dateA = new Date(a.validity);
+                const dateB = new Date(b.validity);
+                const comparison = dateA - dateB;
+
+                // Multiplica por -1 se a direção for 'desc' para inverter a ordenação
+                return this.sortDirection === 'asc' ? comparison : comparison * -1;
+            });
         },
         filterByCategory() {
             if (this.categoryFilter.trim() === "") {
@@ -163,14 +181,13 @@ const app = Vue.createApp({
         },
         // Valida se o valor colocado é negativo ou maior que a quantidade de estoque
         validateQuantity() {
-        if (this.quantity < 0) {
-            this.quantity = 1; // se for negativo, muda para 1 no input
-        }
-        else if (this.quantity > this.currentQtd) {
-            this.quantity = this.currentQtd; // se for maior que a qtd de estoque, retorna pro maximo valor existente de estoque
-            
-        }
-    },
+            if (this.quantity < 0) {
+                this.quantity = 1; // se for negativo, muda para 1 no input
+            } else if (this.quantity > this.currentQtd) {
+                this.quantity = this.currentQtd; // se for maior que a qtd de estoque, retorna pro maximo valor existente de estoque
+
+            }
+        },
         async checkOut() {
             const sysDate = new Date();
             const day = sysDate.getDate().toString().padStart(2, '0');

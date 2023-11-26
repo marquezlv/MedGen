@@ -97,12 +97,13 @@ public class Users {
     public static void updateUser(String login, String name, String role, String password) throws Exception{
         Connection con = AppListener.getConnection();
         // Identico ao insert com a diferença de que o login seja igual ao do usuario logado
-        String sql = "UPDATE users SET name=?, role=?, password_hash=? WHERE login=?";
+        String sql = "UPDATE users SET login=?, name=?, role=?, password_hash=? WHERE login=?";
         PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1,name);
-        stmt.setString(2,role);
-        stmt.setString(3,AppListener.getMd5Hash(password));
-        stmt.setString(4,login);
+        stmt.setString(1,login);
+        stmt.setString(2,name);
+        stmt.setString(3,role);
+        stmt.setString(4,AppListener.getMd5Hash(password));
+        stmt.setString(5,login);
         stmt.execute();
         stmt.close();
         con.close();       

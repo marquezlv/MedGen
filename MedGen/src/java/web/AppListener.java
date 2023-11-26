@@ -35,10 +35,8 @@ public class AppListener implements ServletContextListener{
             // Preparando a conexao e execução de comandos SQL
             Connection c = AppListener.getConnection();
             Statement s = c.createStatement();
-            // Deixando pronto execução de delete de todos os dados caso necessario
-            // s.execute("DELETE FROM users");
-            // s.execute("DELETE FROM medicine");
-            // Dando feedback no log           
+            // colocando UTF-8 no banco
+            s.execute("PRAGMA encoding = 'UTF-8'");
             initializeLog += new Date() + ": Initializing database creation;";
             initializeLog += "Creating Users table if not exists...";
             s.execute(Users.getCreateStatement());
@@ -60,7 +58,7 @@ public class AppListener implements ServletContextListener{
             initializeLog += "Done.";
             initializeLog += "Creating Supplier table if not exists...";
             s.execute(Supplier.getCreateStatement());
-            initializeLog += "Done.";
+            initializeLog += "Done.";             
             s.close();
             c.close();
         } catch(Exception ex){

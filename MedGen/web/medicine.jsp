@@ -50,13 +50,19 @@
                         </div>
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Quantidade</label>
-                                <input v-model="quantity" type="number" class="form-control" id="quantity" step="1" required>
-
+                                <input type="number" class="form-control" v-model="quantity" id="quantity" @input="validateQuantity" required min="1">
+                                            <div v-if="error" class="alert alert-danger mt-2" role="alert">
+                                                {{error}}
+                                            </div> 
                         </div>
                         <div class="mb-3">
                             <label for="price" class="form-label">Preço</label>
                             <!-- <input v-model="price" type="text" class="form-control" id="price" required> -->
-                            <input v-model="price" type="number" class="form-control" id="price" step="0.01" required>
+                            <!-- <input v-model="price" type="number" class="form-control" id="price" step="0.01" required> -->
+                            <input type="number" class="form-control" v-model="price" id="price" step="0.01" @input="validatePrice" required>
+                                            <div v-if="error" class="alert alert-danger mt-2" role="alert">
+                                                {{error}}
+                                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="validityDate" class="form-label">Data de Validade</label>
@@ -67,6 +73,7 @@
                 </div>
                 <button @click="toggleContent()" :class="showContent ? 'btn btn-danger' : 'btn btn-success'">{{ showContent ? 'Cancelar' : 'Adicionar Medicamento' }}</button>    
             </div>
+            <!--Table sus -->
             <table class="table">
                 <tr v-for="item in list" :key="item.rowId">
                 </tr>
@@ -202,6 +209,17 @@
                 console.error("Erro ao excluir o medicamento:", error);
             }
         },
+            validateQuantity() {
+            if (this.quantity < 0) {
+            this.quantity = 1; // se for negativo, muda para 1 no input
+                }
+                },
+            validatePrice() {
+        if (this.price < 0) {
+            this.price = 1; // se for negativo, muda para 1 no input
+                }
+                },    
+                
             toggleContent(medicine) {
                 this.showContent = !this.showContent;
                 if (medicine) {

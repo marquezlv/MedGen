@@ -32,11 +32,11 @@
                                 <form>
                                     <div class="mb-3">
                                         <label for="medicineName" class="form-label">Name</label>
-                                        <input type="text" v-model="medicineName" class="form-control" id="medicineName" required>
+                                        <input type="text" v-model="medicineName" class="form-control" id="medicineName" placeholder="ex. Medicine" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="category" class="form-label">Category</label>
-                                        <input type="text" v-model="category" class="form-control" id="category" required>
+                                        <input type="text" v-model="category" class="form-control" id="category" placeholder= "ex. Antibiotic" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="quantity" class="form-label">Quantity</label>
@@ -75,7 +75,7 @@
 
                 <table class="table">
                     <tr>
-                        <th>ID</th>
+                        <th>BATCH</th>
                         <th>NAME</th>
                         <th>CATEGORY</th>
                         <th>QUANTITY</th>
@@ -84,7 +84,7 @@
                         <th>SUPPLIER</th>
                         <th>ACTIONS</th>
                     </tr>
-                    <tr v-for="item in list" :key="item.rowId">
+                    <tr v-for="item in list" :key="item.rowid">
                         <td>{{item.rowid}}</td>
                         <td>{{item.name}}</td>
                         <td>{{item.category}}</td>
@@ -158,6 +158,7 @@ const app = Vue.createApp({
                 date: formattedDate,
                 supplier: this.newSupplier
             });
+            this.loadList();
             this.resetForm();
         },
         async updateMedicine() {

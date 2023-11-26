@@ -167,7 +167,8 @@ public class ApiServlet extends HttpServlet {
             String sdate = body.getString("date");
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             Date date = formatter.parse(sdate);
-            Medicine.insertMedicine(name, category, quantity, price, date);
+            String supplier = body.getString("supplier");
+            Medicine.insertMedicine(name, category, quantity, price, date, supplier);
         } else if(request.getMethod().toLowerCase().equals("put")){
             JSONObject body = getJSONBODY(request.getReader());
             String name = body.getString("name");
@@ -178,7 +179,8 @@ public class ApiServlet extends HttpServlet {
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             Long id = Long.parseLong(request.getParameter("id"));
             Date date = formatter.parse(sdate);
-            Medicine.updateMedicine(id, name, category, quantity, price, date);
+            String supplier = body.getString("supplier");
+            Medicine.updateMedicine(id, name, category, quantity, price, date, supplier);
         } else if(request.getMethod().toLowerCase().equals("delete")){
             Long id = Long.parseLong(request.getParameter("id"));
             Medicine.deleteMedicine(id);

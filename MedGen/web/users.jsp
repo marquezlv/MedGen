@@ -146,9 +146,7 @@ const app = Vue.createApp({
                 role: this.newRole,
                 password: this.newPassword
             });
-            if (data) {
-
-            }
+            this.loadList();
         },
         async updateUser() {
             const index = this.list.findIndex(item => item.rowid === this.user.rowid);

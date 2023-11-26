@@ -12,9 +12,12 @@
         <%@ include file="WEB-INF/jspf/header.jspf" %>
         <div id="app" class="container mt-5">
             <div v-if="shared.session">
+                <div v-if="error" class="alert alert-danger m-2" role="alert">
+                    {{error}}
+                </div>
                 <h2>
                     Suppliers
-                    <button type ="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+                    <button @click="resetForm()" type ="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
                         Add
                     </button>
                 </h2>
@@ -31,23 +34,23 @@
                                 <form>
                                     <div class="mb-3">
                                         <label for="inputName" class="form-label">Name</label>
-                                        <input type="text" v-model="name" class="form-control" id="inputName">
+                                        <input type="text" v-model="name" class="form-control" id="inputName" placeholder="Supplier name">
                                     </div>
                                     <div class="mb-3">
                                         <label for="inputAddress" class="form-label">Address</label>
-                                        <input type="text" v-model="address" class="form-control" id="inputAddress">
+                                        <input type="text" v-model="address" class="form-control" id="inputAddress" placeholder="Av. Paulista, 123" >
                                     </div>
                                     <div class="mb-3">
                                         <label for="inputPhone" class="form-label">Phone</label>
-                                        <input type="text" v-model="phone" class="form-control" id="inputPhone">
+                                        <input type="text" v-model="phone" class="form-control" id="inputPhone" pattern="\(\d{2}\) \d{5}-\d{4}" placeholder="(12) 34567-8901" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="inputEmail" class="form-label">E-mail</label>
-                                        <input type="text" v-model="email" class="form-control" id="inputEmail">
+                                        <input type="text" v-model="email" class="form-control" id="inputEmail" placeholder="someone@gmail.com">
                                     </div>
                                     <div class="mb-3">
                                         <label for="inputCnpj" class="form-label">CNPJ</label>
-                                        <input type="text" v-model="cnpj" class="form-control" id="inputCnpj">
+                                        <input type="text" v-model="cnpj" class="form-control" id="inputCnpj" placeholder="12.345.678/0001-12">
                                     </div>
                                 </form>
                             </div>
@@ -202,7 +205,6 @@ const app = Vue.createApp({
             }
         },
         toggleContent(supplier) {
-            this.showContent = !this.showContent;
             if (supplier) {
                 this.editingSupplier = {...supplier};
                 this.name = this.editingSupplier.name;
@@ -215,7 +217,7 @@ const app = Vue.createApp({
             }
         },
         resetForm() {
-            this.supplierName = '';
+            this.name = '';
             this.address = '';
             this.phone = '';
             this.email = '';

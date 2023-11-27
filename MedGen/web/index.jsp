@@ -1,9 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : 5 de nov. de 2023, 15:50:56
-    Author     : Lucas
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>

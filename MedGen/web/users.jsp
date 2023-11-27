@@ -17,7 +17,7 @@
                     {{error}}
                 </div>
                 <div v-else>
-                    <h2>
+                    <h2 class="mb-3" style="margin-top: 50px;">
                         Users
                         <!-- Botão do modal  -->
                         <button @click="resetForm()" type ="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">

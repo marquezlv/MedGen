@@ -6,24 +6,20 @@
         <title>MedGen</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>   
     </head>
     <body>
         <%@ include file="WEB-INF/jspf/header.jspf" %>
-        <div id="app" class="container">
+        <div id="app" class="container" >
             <div v-if="shared.session">
-                <div v-else>
-                    <div class="mb-3">
-                        <!-- Input com um botão para realizar o filtro de categoria -->
-                        <label for="categoryFilter" class="form-label">Search for category:</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">
-                            <button class="btn btn-primary" @click="filterByCategory">
-                                <i class="bi bi-search"></i> Filter
-                            </button>
-                        </div>
+                <div v-else class="mt-4">
+                    <div class="input-group" style="width: 500px;  display: flex; align-items: center;"  >
+                        <h2 class="mb-3" style="margin-right: 10px; margin-top: 30px;">Medicines </h2>
+                        <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter" placeholder="Search for category:" style= "width: 250px; margin-left: 10px; margin-top: 20px;">
+                        <button style="margin-top: 20px;" class="btn btn-primary" @click="filterByCategory" >
+                            <i class="bi bi-search"></i> Filter
+                        </button>
                     </div>
-                    <h2>Medicines</h2>
                     <table class="table">
                         <tr>
                             <th>BATCH</th>

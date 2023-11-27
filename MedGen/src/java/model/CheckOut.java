@@ -9,6 +9,8 @@ import java.util.Date;
 import web.AppListener;
 
 public class CheckOut {
+
+    // Criando todas as variaveis para esta classe
     private long rowid;
     private String userName;
     private double price;
@@ -16,8 +18,9 @@ public class CheckOut {
     private String medicineName;
     private int quantity;
     private Date checkOut;
-    
-    public static String getCreateStatement(){
+
+    // Metodo para retornar o comando SQL de criação da tabela em banco
+    public static String getCreateStatement() {
         return "CREATE TABLE IF NOT EXISTS checkOut("
                 + "nm_user varchar(100) not null,"
                 + "vl_medicine numeric(10,2) not null,"
@@ -27,8 +30,9 @@ public class CheckOut {
                 + "dt_checkOut datetime not null"
                 + ")";
     }
-    
-    public CheckOut(long rowid,String nameUser, double price, double priceTotal, String nameMedicine, int quantity, Date checkOut) {
+
+    // Construtor com todos os atributos da classe
+    public CheckOut(long rowid, String nameUser, double price, double priceTotal, String nameMedicine, int quantity, Date checkOut) {
         this.rowid = rowid;
         this.userName = nameUser;
         this.price = price;
@@ -37,13 +41,17 @@ public class CheckOut {
         this.quantity = quantity;
         this.checkOut = checkOut;
     }
-    
-    public static ArrayList<CheckOut> getCheckOuts() throws Exception{
+
+    // Metodo get para retornar uma lista de objeto da classe
+    public static ArrayList<CheckOut> getCheckOuts() throws Exception {
         ArrayList<CheckOut> list = new ArrayList<>();
         Connection con = AppListener.getConnection();
         Statement stmt = con.createStatement();
+        // Setar o resultado do comando sql na variavel rs
         ResultSet rs = stmt.executeQuery("SELECT rowid, * from checkOut");
-        while(rs.next()){
+        // Enquanto retornar resultado ele executa
+        while (rs.next()) {
+            // Pegando os valores contidos em cada coluna e armazenando em uma lista
             long rowId = rs.getLong("rowid");
             String user = rs.getString("nm_user");
             double price = rs.getDouble("vl_medicine");
@@ -55,36 +63,44 @@ public class CheckOut {
         }
         rs.close();
         stmt.close();
-        con.close(); 
+        con.close();
         return list;
     }
-    
-    public static void insertCheckOut(String user,double  price, double priceTotal , String medicine, int quantity, Date checkOut) throws Exception{
+
+    // Metodo para inserir no banco
+    public static void insertCheckOut(String user, double price, double priceTotal, String medicine, int quantity, Date checkOut) throws Exception {
         Connection con = AppListener.getConnection();
+        // Comando sql para inserir os dados nas colunas da tabela
         String sql = "INSERT INTO checkOut(nm_user, vl_medicine, vl_total, nm_medicine, qt_total, dt_checkOut)"
                 + "VALUES(?,?,?,?,?,?)";
+        // Setando as variaveis "?" com os valores recebidos do parametro
         PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1,user);
-        stmt.setDouble(2,price);
-        stmt.setDouble(3,priceTotal);
-        stmt.setString(4,medicine);
-        stmt.setInt(5,quantity);
+        stmt.setString(1, user);
+        stmt.setDouble(2, price);
+        stmt.setDouble(3, priceTotal);
+        stmt.setString(4, medicine);
+        stmt.setInt(5, quantity);
+        // Convertendo a data do java para a data do SQL aceito no banco
         java.sql.Date sqlDate = new java.sql.Date(checkOut.getTime());
-        stmt.setDate(6,sqlDate);
-        
+        stmt.setDate(6, sqlDate);
+
         stmt.execute();
         stmt.close();
-        con.close();       
+        con.close();
     }
-    public static void deleteCheckOut() throws Exception{
+
+    // Metodo para deletar TODOS os dados da tabela
+    public static void deleteCheckOut() throws Exception {
         Connection con = AppListener.getConnection();
+        // O metodo não deleta por ID e sim faz uma limpeza na tabela
         String sql = "DELETE FROM checkOut";
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.execute();
         stmt.close();
-        con.close();       
-    } 
-    
+        con.close();
+    }
+
+    // Getters e Setters
     public long getRowid() {
         return rowid;
     }
@@ -136,8 +152,8 @@ public class CheckOut {
     public void setCheckOut(Date checkOut) {
         this.checkOut = checkOut;
     }
-    
-    public Date getCheckOut(){
+
+    public Date getCheckOut() {
         return checkOut;
     }
 }

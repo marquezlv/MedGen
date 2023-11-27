@@ -16,7 +16,7 @@
                 <div v-if="error" class="alert alert-danger m-2" role="alert">
                     {{error}}
                 </div>
-                <h2>
+                <h2 class="mb-3" style="margin-top: 50px;">
                     Suppliers
                     <button @click="resetForm()" type ="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
                         Add

@@ -1,3 +1,4 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -30,7 +31,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- Formulário de adição de novo fornecedor -->
+                                <!-- FormulÃ¡rio de adiÃ§Ã£o de novo fornecedor -->
                                 <form>
                                     <div class="mb-3">
                                         <label for="inputName" class="form-label">Name</label>
@@ -54,7 +55,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <!-- Botões de save e cancel -->
+                            <!-- BotÃµes de save e cancel -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
@@ -63,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Tabela para exibição -->
+                <!-- Tabela para exibiÃ§Ã£o -->
                 <table class="table">
                     <tr>
                         <th>ID</th>
@@ -126,6 +127,7 @@ const app = Vue.createApp({
         }
         },
 
+        // Metodo para verificar qual dos 2 metodos irÃ¡ chamar, update ou insert
         async insertOrUpdateSupplier() {
             if (this.editingSupplier) {
                 await this.updateSupplier();
@@ -133,6 +135,7 @@ const app = Vue.createApp({
                 await this.insertSupplier();
             }
         },
+        // Metodo para inserir o novo fornecedor
         async insertSupplier() {
             console.log(this.name);
             console.log(this.address);
@@ -150,6 +153,7 @@ const app = Vue.createApp({
             this.loadList();
             this.resetForm();
         },
+        // Metodo para realizar update no fornecedor
         async updateSupplier() {
             // Modifica apenas o item editado na lista
             const index = this.list.findIndex(item => item.rowid === this.editingSupplier.rowid);
@@ -187,15 +191,16 @@ const app = Vue.createApp({
             }
             console.log(data);
         },
+        // Metodo para deletar o fornecedor
         async deleteSupplier(rowid) {
             try {
-                // Box de confirmação de delete
+                // Box de confirmaÃ§Ã£o de delete
                 const confirmDelete = confirm("Tem certeza que deseja excluir este fornecedor?");
 
                 if (!confirmDelete) {
                     return;
                 }
-                // Envia uma solicitação para excluir o medicamento
+                // Envia uma solicitaÃ§Ã£o para excluir o medicamento
                 const response = await this.request("/MedGen/api/supplier?id=" + rowid, "DELETE");
                 if (response) {
                     this.loadList();
@@ -204,6 +209,7 @@ const app = Vue.createApp({
                 console.error("Erro ao excluir o fornecedor:", error);
             }
         },
+        // Metodo para habilitar ediÃ§Ã£o do fornecedor
         toggleContent(supplier) {
             if (supplier) {
                 this.editingSupplier = {...supplier};
@@ -216,6 +222,7 @@ const app = Vue.createApp({
                 this.resetForm();
             }
         },
+        // Resetar as variaveis utilizada no formulario
         resetForm() {
             this.name = '';
             this.address = '';
@@ -231,5 +238,5 @@ const app = Vue.createApp({
 app.mount('#app');
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    </body>
+        Â </body>
 </html>

@@ -9,6 +9,7 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     </head>
     <body>
+        <!-- Incluindo o arquivo Header na pagina -->
         <%@ include file="WEB-INF/jspf/header.jspf" %>
         <div id="app" class="container">
             <div v-if="shared.session">
@@ -17,9 +18,10 @@
                 </div>
                 <div v-else>
                     <h2>Edit History
-                    <!--Restrição para que apenas admin veja e consiga excluir historico -->
-                    <button v-if="shared.session.role == 'ADMIN'" class="btn btn-danger" @click="clearHistory()">Clear History</button>
-                </h2>
+                        <!--Restrição para que apenas admin veja e consiga excluir historico -->
+                        <button v-if="shared.session.role == 'ADMIN'" class="btn btn-danger" @click="clearHistory()">Clear History</button>
+                    </h2>
+                    <!-- Tabela para exibir todos os dados de edição -->
                     <table class="table">
                         <tr>
                             <th>User who modified</th>
@@ -62,12 +64,14 @@ const app = Vue.createApp({
                 return null;
         }
         },
+        // Metodo para carregar a lista de historico de edições
         async loadList() {
             const data = await this.request("/MedGen/api/editHistory", "GET");
             if (data) {
                 this.list = data.list;
             }
         },
+        // Metodo para limpar os dados
         async clearHistory() {
             const confirmDelete = confirm("Tem certeza que deseja limpar TODO historico de edição?");
 

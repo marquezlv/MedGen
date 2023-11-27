@@ -16,7 +16,7 @@
                     {{error}}
                 </div>
                 <div v-else>
-                    <h2>Sales Report
+                    <h2 class="mb-3" style="margin-top: 50px;">Sales Report
                         <!--  Restrição para que apenas o admin consiga deletar histórico -->
                         <button v-if="shared.session.role == 'ADMIN'" class="btn btn-danger" @click="clearHistory()">Clear History</button>
                     </h2>

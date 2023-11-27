@@ -12,10 +12,6 @@
         <%@ include file="WEB-INF/jspf/header.jspf" %>
         <div id="app" class="container">
             <div v-if="shared.session">
-                <div v-if="error" class="alert alert-danger m-2" role="alert">
-                    {{error}}
-                </div>
-
                 <div v-else>
                     <div class="mb-3">
                         <!-- Input com um botão para realizar o filtro de categoria -->
@@ -42,7 +38,7 @@
                             </th>
                             <th>ACTIONS</th>
                         </tr>
-                        <tr v-for="item in list" :key="item.rowId">
+                        <tr v-for="item in list" :key="item.rowid">
                             <td>{{item.rowid}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.category}}</td>
@@ -50,7 +46,7 @@
                             <td>{{item.price}}</td>
                             <td>{{item.validity}}</td>
                             <!-- Botão de carrinho para dar abater do medicamento, abrindo um formulario e setando as variaveis do respectivo medicamento -->
-                            <td><button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#checkOut" @click="setVariables(item.name,item.price, item.category, item.validity, item.quantity, item.rowid)"><i class="bi bi-cart2"></i></button></td>
+                            <td><button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#checkOut" @click="setVariables(item.name,item.price, item.category, item.validity, item.quantity, item.rowid, item.supplier)"><i class="bi bi-cart2"></i></button></td>
                         </tr>
                     </table>
                     <!-- Formulario para dar abate no medicamento -->
@@ -107,7 +103,8 @@ const app = Vue.createApp({
             category: '',
             validityDate: '',
             sortDirection: 'asc',
-            rowid: 0
+            rowid: 0,
+            supplier: ''
         }
     },
     methods: {
@@ -158,13 +155,14 @@ const app = Vue.createApp({
             }
         },
         // Metodo para setar as variaveis quando necessario
-        async setVariables(name, price, category, date, quantity, id) {
+        async setVariables(name, price, category, date, quantity, id, supplier) {
             this.medicineName = name;
             this.medicinePrice = price;
             this.category = category;
             this.validityDate = date;
             this.currentQtd = quantity;
-            this.rowid = id
+            this.rowid = id;
+            this.supplier = supplier;
         },
         //Metodo para dar update na medicine
         async updateMedicine() {
@@ -181,7 +179,8 @@ const app = Vue.createApp({
                 category: this.category,
                 quantity: newQuantity,
                 price: parseFloat(this.medicinePrice),
-                date: formattedDate
+                date: formattedDate,
+                supplier: this.supplier
             });
         },
         // Valida se o valor colocado é negativo ou maior que a quantidade de estoque
@@ -211,6 +210,7 @@ const app = Vue.createApp({
             this.updateMedicine();
             // Resetando as variaveis utilizadas
             this.resetForm();
+            this.loadList();
             // Atualizando a pagina para garantir a atualização da lista
             window.location.reload();
         },

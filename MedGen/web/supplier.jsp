@@ -75,7 +75,7 @@
                         <th>CNPJ</th>
                         <th>ACTIONS</th>
                     </tr>
-                    <tr v-for="item in list" :key="item.rowId">
+                    <tr v-for="item in list" :key="item.rowid">
                         <td>{{item.rowid}}</td>
                         <td>{{item.name}}</td>
                         <td>{{item.address}}</td>

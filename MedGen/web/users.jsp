@@ -125,6 +125,7 @@ const app = Vue.createApp({
                 return null;
         }
         },
+        // Metodo para verificar se deve chamar o inser ou update dependendo do objeto user
         async insertOrUpdate() {
             if (this.user) {
                 await this.updateUser();
@@ -138,6 +139,7 @@ const app = Vue.createApp({
                 this.list = data.list;
             }
         },
+        // Metodo para adicionar um novo usuario no sistema
         async addUser() {
             const data = await this.request("/MedGen/api/users", "POST", {
                 login: this.newLogin,
@@ -147,7 +149,9 @@ const app = Vue.createApp({
             });
             this.loadList();
         },
+        // Metodo para dar update no usuario    
         async updateUser() {
+            // Altera somente o campo que foi editado
             const index = this.list.findIndex(item => item.rowid === this.user.rowid);
             if (index !== -1) {
                 this.list[index] = {
@@ -159,6 +163,7 @@ const app = Vue.createApp({
                 };
             }
 
+            // Envia pro servidor
             const data = await this.request(`/MedGen/api/users?id=` + (this.user.rowid), "PUT", {
                 name: this.newName,
                 login: this.newLogin,
@@ -170,6 +175,7 @@ const app = Vue.createApp({
             this.user = null;
         },
 
+        // Metodo para remover o usuario do sistema
         async removeUser(id) {
             try {
                 // Box de confirmação de delete
@@ -186,6 +192,7 @@ const app = Vue.createApp({
                 console.error("Erro ao excluir o usuário:", error);
             }
         },
+        // Metodo para setar as variaveis de edição
         setVariables(user) {
             if (user) {
                 this.user = {...user};
@@ -196,6 +203,7 @@ const app = Vue.createApp({
                 this.resetForm();
             }
         },
+        // Metodo para resetar o formulario e atualizar a lista
         resetForm() {
             this.newRole = 'USER';
             this.newLogin = '';

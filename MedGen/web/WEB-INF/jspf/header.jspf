@@ -1,6 +1,7 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="UTF-8" %>
 <div id="session">
+    <!-- Navbar que só é exibida quando possui dados do usuario -->
     <nav v-if="data" class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.jsp"><i class="bi bi-heart-pulse-fill"></i>&nbsp;MedGen</a>
@@ -8,6 +9,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
+                <!-- Links para navageção da pagina -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="index.jsp">Home</a>
@@ -28,6 +30,7 @@
                         <a class="nav-link" href="supplier.jsp">Suppliers</a>
                     </li>
                 </ul>
+                <!-- Nome da pessoa logada, junt com o botão que chama a função de dar logout -->
                 <span class="navbar-text">
                     <i class="bi bi-person"></i>{{data.name}}
                     <button @click="logout()" class="btn btn-sm btn-danger" type="button"><i class="bi bi-arrow-right-circle"></i></button>
@@ -35,6 +38,7 @@
             </div>
         </div>
     </nav>
+    <!-- Caso não haja dados na sessão, o formulario de login irá aparecer -->
     <div v-else>
         <div class="card m-2">
             <div class="card-header">
@@ -55,6 +59,7 @@
             </div>
         </div>
     </div>
+    <!-- Caso ocorra algum erro sem ser de sessão exibe na tela -->
     <div v-if="error && error !=='No session'" class="alert alert-danger m-2" role="alert">
         {{error}}
     </div>
@@ -73,6 +78,7 @@
             }
         },
         methods: {
+            // Metodo padrão para realizar solicitação na Api
             async request(url = "", method, data) {
                 try {
                     const response = await fetch(url, {
@@ -90,6 +96,7 @@
                     return null;
             }
             },
+            // Metodo para carregar a sessão do usuario e salvando em uma variavel compartilhada entre tela
             async loadSession() {
                 const data = await this.request("/MedGen/api/session", "GET");
                 if (data) {
@@ -98,6 +105,7 @@
                     this.shared.session = this.data;
                 }
             },
+            // Metodo para realizar o login do usuario
             async login() {
                 const data = await this.request("/MedGen/api/session", "PUT", {"login": this.loginUsername, "password": this.loginPassword});
                 if (data) {
@@ -108,6 +116,7 @@
                     window.location.href = "/MedGen/index.jsp";
                 }
             },
+            // Metodo para realizar o logout do usuario
             async logout() {
                 const data = await this.request("/MedGen/api/session", "DELETE");
                 if (data) {

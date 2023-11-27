@@ -39,11 +39,11 @@ Permite que fornecedores sejam cadastrados, inserindo informações como nome, e
 2. Cadastre novos usuários para acessar o sistema.
 
 # Tecnologias utilizadas
-1. JavaEE
-2. SQLite
-3. JSON
-4. GlassFish
-5. BootStrap
-6. Vue
+* JavaEE
+* SQLite
+* JSON
+* GlassFish
+* BootStrap
+* Vue
 
 

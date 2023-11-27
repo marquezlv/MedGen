@@ -1,3 +1,4 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,7 +22,7 @@
                         Add
                     </button>
                 </h2>
-                <!-- Formulario para inserção de um novo medicamento -->
+                <!-- Formulario para inserÃ§Ã£o de um novo medicamento -->
                 <div class="modal fade" id="addMedicineModal" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -59,7 +60,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="supplier" class="form-label">Supplier</label>
-                                        <!-- Select para o usuario selecionar um dos fornecedores ja cadastrados (item2 para não dar conflito com a tabela) -->
+                                        <!-- Select para o usuario selecionar um dos fornecedores ja cadastrados (item2 para nÃ£o dar conflito com a tabela) -->
                                         <select class="form-select" v-model="newSupplier" id="supplier">
                                             <option v-for="item2 in supplier" :key="item2.rowid" :value="item2.name">{{item2.name}}</option>
                                         </select>
@@ -68,7 +69,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <!-- Aproveitando o mesmo formulario para inserir e dar update chamando uma função de verificação -->
+                                <!-- Aproveitando o mesmo formulario para inserir e dar update chamando uma funÃ§Ã£o de verificaÃ§Ã£o -->
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
                                         @click="insertOrUpdateMedicine()">Save</button>
                             </div>
@@ -97,7 +98,7 @@
                         <td>{{item.supplier}}</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic Example">
-                                <!-- Passando como parametro para o toggleContent o item da lista que é o objeto medicine -->
+                                <!-- Passando como parametro para o toggleContent o item da lista que Ã© o objeto medicine -->
                                 <button class="btn btn-warning" @click="toggleContent(item)" data-bs-toggle="modal" data-bs-target="#addMedicineModal"><i class="bi bi-pen"></i></button>
                                 <button class="btn btn-danger" @click="deleteMedicine(item.rowid)"><i class="bi bi-trash"></i></button>
                             </div>
@@ -119,7 +120,7 @@ const app = Vue.createApp({
             list: [],
             supplier: [], // Uma lista dos fornecedores resgatado do get
             newSupplier: '', // Variavel utilizada para selecionar o fornecedor
-            editingMedicine: null // Objeto de edição de medicine iniciando como nulo
+            editingMedicine: null // Objeto de ediÃ§Ã£o de medicine iniciando como nulo
         };
     },
     methods: {
@@ -140,7 +141,7 @@ const app = Vue.createApp({
                 return null;
         }
         },
-        // Metodo para chamar uma das 2 funções, insert ou update verificando se existe algum objeto dentro do editingMedicine
+        // Metodo para chamar uma das 2 funÃ§Ãµes, insert ou update verificando se existe algum objeto dentro do editingMedicine
         async insertOrUpdateMedicine() {
             if (this.editingMedicine) {
                 await this.updateMedicine();
@@ -151,9 +152,9 @@ const app = Vue.createApp({
         // Metodo para inserir a nova medicina no banco
         async insertMedicine() {
             const originalDate = new Date(this.validityDate);
-            // Obtendo componentes de data (dia, mês, ano)
+            // Obtendo componentes de data (dia, mÃªs, ano)
             const day = originalDate.getDate().toString().padStart(2, '0');
-            const month = (originalDate.getMonth() + 1).toString().padStart(2, '0'); // O mês é baseado em zero
+            const month = (originalDate.getMonth() + 1).toString().padStart(2, '0'); // O mÃªs Ã© baseado em zero
             const year = originalDate.getFullYear();
             const formattedDate = day + '/' + month + '/' + year;
             const data = await this.request("/MedGen/api/medicine", "POST", {
@@ -190,7 +191,7 @@ const app = Vue.createApp({
             }
 
             // Envia para o servidor 
-            const data = await this.request(`/MedGen/api/medicine?id=` + (this.editingMedicine.rowid), "PUT", {
+            const data = await this.request(`/MedGen/api/medicine?id=` + (this.editingMedicine.rowid),Â "PUT",Â {
                 name: this.medicineName,
                 category: this.category,
                 quantity: this.quantity,
@@ -199,14 +200,14 @@ const app = Vue.createApp({
                 supplier: this.newSupplier
             });
             this.loadList();
-            // Adicionando o historico de edição após o update da medicine
+            // Adicionando o historico de ediÃ§Ã£o apÃ³s o update da medicine
             this.addHistory();
             this.resetForm();
-            // setando o objeto da edição da medicina para nulo novamente
+            // setando o objeto da ediÃ§Ã£o da medicina para nulo novamente
             this.editingMedicine = null;
             this.toggleContent(null);
         },
-        // Metodo para adicionar o historico de edição que fez a edição no medicamento
+        // Metodo para adicionar o historico de ediÃ§Ã£o que fez a ediÃ§Ã£o no medicamento
         async addHistory() {
             // Pegando a data atual e formatando para manter no banco
             const sysDate = new Date();
@@ -236,13 +237,13 @@ const app = Vue.createApp({
         // Metodo para deletar a medicina
         async deleteMedicine(rowid) {
             try {
-                // Box de confirmação de delete
+                // Box de confirmaÃ§Ã£o de delete
                 const confirmDelete = confirm("Tem certeza que deseja excluir este medicamento?");
 
                 if (!confirmDelete) {
                     return;
                 }
-                // Envia uma solicitação para excluir o medicamento
+                // Envia uma solicitaÃ§Ã£o para excluir o medicamento
                 const response = await this.request(`/MedGen/api/medicine?id=` + rowid, "DELETE");
                 if (response) {
                     this.loadList();
@@ -251,19 +252,19 @@ const app = Vue.createApp({
                 console.error("Erro ao excluir o medicamento:", error);
             }
         },
-        // Metodo para validar a quantidade não sendo menor que zero
+        // Metodo para validar a quantidade nÃ£o sendo menor que zero
         validateQuantity() {
             if (this.quantity < 0) {
                 this.quantity = 1; // se for negativo, muda para 1 no input
             }
         },
-        // Metodo para validar o preço não sendo menor que zero
+        // Metodo para validar o preÃ§o nÃ£o sendo menor que zero
         validatePrice() {
             if (this.price < 0) {
                 this.price = 1; // se for negativo, muda para 1 no input
             }
         },
-        // Metodo para habilitar o conteudo de edição, realizando uma copia do objeto medicine para a variavel de edição
+        // Metodo para habilitar o conteudo de ediÃ§Ã£o, realizando uma copia do objeto medicine para a variavel de ediÃ§Ã£o
         toggleContent(medicine) {
             if (medicine) {
                 this.editingMedicine = {...medicine};

@@ -24,6 +24,7 @@
 
                 <div v-else>
                     <div class="mb-3">
+                        <!-- Input com um botão para realizar o filtro de categoria -->
                         <label for="categoryFilter" class="form-label">Search for category:</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="categoryFilter" v-model="categoryFilter">
@@ -40,6 +41,7 @@
                             <th>CATEGORY</th>
                             <th>QUANTITY</th>
                             <th>PRICE</th>
+                            <!-- um icone de seta para indicar qual a ordenação da validade, ao clicar chama a função para inverter -->
                             <th>
                                 VALIDITY DATE
                                 <span @click="sortByValidity" v-html="sortDirection === 'asc' ? '<i class=\'bi bi-arrow-up\'></i>' : '<i class=\'bi bi-arrow-down\'></i>'"></span>
@@ -53,9 +55,11 @@
                             <td>{{item.quantity}}</td>
                             <td>{{item.price}}</td>
                             <td>{{item.validity}}</td>
+                            <!-- Botão de carrinho para dar abater do medicamento, abrindo um formulario e setando as variaveis do respectivo medicamento -->
                             <td><button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#checkOut" @click="setVariables(item.name,item.price, item.category, item.validity, item.quantity, item.rowid)"><i class="bi bi-cart2"></i></button></td>
                         </tr>
                     </table>
+                    <!-- Formulario para dar abate no medicamento -->
                     <div class="modal fade" id="checkOut" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -130,6 +134,7 @@ const app = Vue.createApp({
                 return null;
         }
         },
+        // Metodo para organizar a lista de por ordem da data de validade
         sortByValidity() {
             // Alterna a direção da ordenação
             this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -144,7 +149,9 @@ const app = Vue.createApp({
                 return this.sortDirection === 'asc' ? comparison : comparison * -1;
             });
         },
+        // Metodo para buscar os medicamentos pela categoria digitada
         filterByCategory() {
+            // Comparando se o campo digitado contem nenhum caractere (metodo trim retira espaços em branco do inicio e fim)
             if (this.categoryFilter.trim() === "") {
                 // Se o campo de filtro estiver vazio, carregue a lista completa
                 this.list = this.listOriginally.slice();
@@ -156,6 +163,7 @@ const app = Vue.createApp({
                 this.list = filteredList;
             }
         },
+        // Metodo para setar as variaveis quando necessario
         async setVariables(name, price, category, date, quantity, id) {
             this.medicineName = name;
             this.medicinePrice = price;
@@ -164,12 +172,15 @@ const app = Vue.createApp({
             this.currentQtd = quantity;
             this.rowid = id
         },
+        //Metodo para dar update na medicine
         async updateMedicine() {
+            // Formatando a data para que garanta o envio correto á API
             const originalDate = new Date(this.validityDate);
             const day = originalDate.getDate().toString().padStart(2, '0');
             const month = (originalDate.getMonth() + 1).toString().padStart(2, '0');
             const year = originalDate.getFullYear();
             const formattedDate = day + '/' + month + '/' + year;
+            // Neste caso iremos abater a quantidade da medicine, então iremos subtrair a quantidade atual pela quantidade digitada
             const newQuantity = this.currentQtd - this.quantity;
             const data = await this.request("/MedGen/api/medicine?id=" + this.rowid, "PUT", {
                 name: this.medicineName,
@@ -188,6 +199,7 @@ const app = Vue.createApp({
 
             }
         },
+        // Valida se o valor colocado é negativo ou maior que a quantidade de estoque
         async checkOut() {
             const sysDate = new Date();
             const day = sysDate.getDate().toString().padStart(2, '0');
@@ -201,10 +213,14 @@ const app = Vue.createApp({
                 quantity: this.quantity,
                 date: formattedDate
             });
+            // Chamando o update medicines para descontar a quantidade fornecida
             this.updateMedicine();
+            // Resetando as variaveis utilizadas
             this.resetForm();
+            // Atualizando a pagina para garantir a atualização da lista
             window.location.reload();
         },
+        // Metodo para resetar todos os campos usado na pagina
         async resetForm() {
             this.currentQtd = 0;
             this.quantity = 0;
@@ -218,6 +234,7 @@ const app = Vue.createApp({
             const data = await this.request("/MedGen/api/medicine", "GET");
             if (data) {
                 this.list = data.list;
+                // Salvando uma copia da lista para realizar o filtro se necessario
                 this.listOriginally = data.list.slice();
             }
         }
